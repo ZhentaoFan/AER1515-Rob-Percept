@@ -14,7 +14,7 @@
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \title{AER 1515, Project Proposal}
-\author{}
+\author{Zhenyuan Xiang, Zhentao Fan}
 
 \begin{document}
 \maketitle
@@ -25,8 +25,8 @@
 
 \section{Problem}
 
-Scenario: suppose a robot with certain tasks is walking in certain areas, like gardens and campuses. In order to do the route planning or for some other purpose, it would be better to have the accurate location of the agent itself.\\\\
-The intention of this project is to locate the robot itself based on the picture it captured by its camera. With the help of Google Maps, we will first compare the captured image with the image in the database, and find the most similar image in the database and infer the current location.
+Consider the scenario that a robot with certain tasks is walking in certain areas, like gardens and campuses. In order to do the route planning or some other tasks, it would be better to have the accurate location of the agent itself.\\\\
+The intention of this project is to locate the robot itself based on the picture it captured by its camera. With the help of Google Maps, we will first compare the captured image with the image in the database, find the most similar image in the database, and infer the current location.
 
 % Your introduction goes here! Simply start writing your document and use the Recompile button to view the updated PDF preview. Examples of commonly used commands and features are listed below, to help you get started.
 
@@ -58,12 +58,27 @@ The database will be stored locally in order to have a better searching runtime.
 
 \section{Relationship to this course}
 
-This project would include topics of Scale-space Peak Selection and Keypoint Localization, which are all robotic vision-related.
+This project would include topics of Scale-space Peak Selection and Keypoint Localization, which are all vision-related.
 
 
 \section{Timeline and Goal}
 
-Set up the image map database. Set up the trained algorithm.
+Milestones will include:
+
+1. Set up the image map database. 
+
+2. Set up the SIFT algorithm. 
+
+3. Set up the search algorithm. 
+
+4. Integrate the location inference.\\
+The final deliverable would make the smartphone able to identify its own location based on its camera.
+
+
+
+% \bibliographystyle{alpha}
+% \bibliography{sample}
+
 
 
 % \subsection{How to create Sections and Subsections}
@@ -148,7 +163,5 @@ Set up the image map database. Set up the trained algorithm.
 
 % We hope you find Overleaf useful, and do take a look at our \href{https://www.overleaf.com/learn}{help library} for more tutorials and user guides! Please also let us know if you have any feedback using the Contact Us link at the bottom of the Overleaf menu --- or use the contact form at \url{https://www.overleaf.com/contact}.
 
-\bibliographystyle{alpha}
-\bibliography{sample}
 
 \end{document}
