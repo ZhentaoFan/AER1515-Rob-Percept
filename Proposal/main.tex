@@ -1,167 +1,107 @@
 \documentclass{article}
 
-% Language setting
-% Replace `english' with e.g. `spanish' to change the document language
-\usepackage[english]{babel}
+\usepackage{amsmath, amsthm, amsfonts, hyperref, graphicx, float}
 
-% Set page size and margins
-% Replace `letterpaper' with `a4paper' for UK/EU standard size
-\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-
-% Useful packages
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
-
-\title{AER 1515, Project Proposal}
+\title{Learning and Enhancement of VPR Methods: Initial Results}
 \author{Zhenyuan Xiang, Zhentao Fan}
+\date{}
 
 \begin{document}
+
 \maketitle
 
-% \begin{abstract}
-% Your abstract.
-% \end{abstract}
+\section{Problem Descriptions}
 
-\section{Problem}
+Visual Place Recognition (VPR) is a technique in the field of computer vision that enables computers or robots to recognize or confirm their location by analyzing images. This problem involves efficiently extracting features from a multitude of images and matching them with an image database of known locations to determine the current position. The challenge in VPR lies in dealing with varying lighting conditions, seasonal changes, and differences in viewpoints, all of which can affect the appearance of images. This technology has widespread applications in autonomous driving, robotic navigation, and augmented reality.
 
-Consider the scenario that a robot with certain tasks is walking in certain areas, like gardens and campuses. In order to do the route planning or some other tasks, it would be better to have the accurate location of the agent itself.\\\\
-The intention of this project is to locate the robot itself based on the picture it captured by its camera. With the help of Google Maps, we will first compare the captured image with the image in the database, find the most similar image in the database, and infer the current location.
+The intention of this project is to investigate the performance of a traditional VPR method, Bag of Visual Words (BoVW), and possible ways to enhance it. We will discuss the possibility of combining the BoVW method with some other algorithms, such as the Edge Boxes method\cite{zitnick2014edge} and some deep learning methods\cite{zhang2021visual}. In addition, we will try to optimize the efficiency of our method.
 
-% Your introduction goes here! Simply start writing your document and use the Recompile button to view the updated PDF preview. Examples of commonly used commands and features are listed below, to help you get started.
+\section{Relationship to Course}
 
-% Once you're familiar with the editor, you can find various project settings in the Overleaf menu, accessed via the button in the very top left of the editor. To view tutorials, user guides, and further documentation, please visit our \href{https://www.overleaf.com/learn}{help library}, or head to our plans page to \href{https://www.overleaf.com/user/subscription/plans}{choose your plan}.
+VPR is a crucial component in the field of robotic perception. This concept involves using visual data to identify or confirm the location of a robot, which is essential for autonomous navigation and map creation.
 
+This project uses a large number of computer vision methods and knowledge explored in this course, such as image processing, keypoint recognition, neural networks and deep learning. Researching this project will contribute to a deeper and more solid understanding of the course content, as well as learning more extended knowledge related to the course.
 
 \section{Methodology}
 
-\subsection{Searching and localization}
+\subsection{Baseline}
 
-The libraries and algorithms that we are going to use include opencv, matplotlib, SIFT, and so on. Here are the steps to achieve the robot localization:\\
+For initial result, we will implement the Bag of Visual Words method, and try to optimize its performance. The training process includes the following steps:
 
-1 . Import the input images captured by the robot. Adjust the RGB channels to ensure compatibility when visualizing with matplotlib.\\
+\begin{enumerate}
+    \item Load images from the training set.
+    \item Use an OpenCV feature detector (e.g. SIFT) to detect keypoints and calculate their descriptors for each image.
+    \item Build the vocabulary using the k-means clustering.
+    \item Based on the vocabulary, transform each descriptor to a word (index), then build word frequency histogram for every image.
+    \item Train a supported vector machine (SVM) by using the histograms and location labels of the images.
+\end{enumerate}
 
-2 . Initialize ORB (Oriented FAST and Rotated BRIEF) using the underlying SIFT method.\\
+After that, we can use the trained SVM to predict locations on the test set. Due to some rotational and scale invariance of the extracted features, as well as the insensitivity of the bag-of-words approach to the object position, the algorithm is still able to give correct predictions even if there is a change in the angle at which the location is photographed, as well as the time at which it is photographed.
 
-3 . Determine the key points and descriptors for both the reference and input images.\\
+\subsection{Improvements}
 
-4 . Set up the Brute Force matcher with the necessary parameters. \\
+In order to improve the accuracy of the BoVW method further, we plan to combine some other methods with it. Currently our ideas are:
 
-5 . Utilize KNN (K-Nearest Neighbors) for matching, which provides matches based on distance similarities.\\
+\begin{enumerate}
+    \item Using the Edge Boxes method to detect common landmark objects, such as street lights, buildings with specific shapes, fire hydrants, etc.
+    \item Detecting areas that may not be of interest, such as pedestrians, cars, and other movable objects, which usually have more distinctive features but have no contribution. In addition, areas where vegetation such as trees are located should be ignored, as they usually produce a particularly high number of duplicate features, resulting in a "contaminated" histogram of the image.
+\end{enumerate}
 
-6 . Do the reverse engineering: get the regions based on the matched image from the database.\\
+To improve efficiency, we will try to avoid duplicate computations and try to use the GPU instead of the CPU for computations to speed up the training process.
 
-\subsection{Database}
+\section{Datasets}
 
-The database will be stored locally in order to have a better searching runtime. We will import the map and the corresponding image either from Google Maps or from the database we set up on our own within a local spot.
+As for datasets, we are using the GSV-Cities dataset\cite{ali2022gsv}, which is a large-scale dataset for the task of VPR. It contains about 530,000 images and more than 62,000 locations, each with 4 to 20 images taken at different angles, light conditions and times. Each image is labeled with the city, place ID, year and month it was taken for us to use as ground truth.
 
+In addition, we use our scripts to select and randomize data for training and testing.
 
-\section{Relationship to this course}
+\section{Initial result}
 
-This project would include topics of Scale-space Peak Selection and Keypoint Localization, which are all vision-related.
+For initial result:
 
+\begin{itemize}
+    \item We test on datasets of different scales: the number of different locations ranged from 10 to 300. On average, approximately 11 images per location were used for training and 1 image for testing.
+    \item For each scale, we run randomized tests 20 times, and calculate the average accuracy, the average training time and the average test time.
+\end{itemize}
+
+\begin{tabular}{|c|c|c|c|}
+    \hline \textbf{\# of places} & \textbf{Accuracy} & \textbf{Training time} & \textbf{Test time}\\
+    \hline 10 & 86.50\% & 10.05s & 2.08s\\
+    \hline 50 & 80.20\% & 55.05s & 3.22s\\
+    \hline 100 & 76.35\% & 108.73s & 4.66s\\
+    \hline 200 & 70.58\% & 214.56s & 7.70s\\
+    \hline 300 & 67.10\% & 319.52s & 11.20s\\
+    \hline
+\end{tabular}
+
+The results seem satisfactory to us, considering that every place in our problem is a category. Also considering that there are many similar scenes in the test set (e.g., street scenes in the same city are sometimes very similar), the fact that the accuracy does not degrade significantly with larger scales indicates that our implementation is reliable.
+
+In terms of efficiency, we found that building vocabularies using k-means was the most time-consuming process. Therefore we used GPUs to accelerate this process by using the cuML - RAPIDS Machine Learning Library. In our early performance tests, we found that we were more than 7 times more efficient overall with the GPU (NVIDIA GeForce RTX 4080) than with the CPU (AMD Ryzen™ 7 7800X3D).
+
+However, there are some limitations of our algorithm because we have not yet implemented our planned improvement methods. For example, Figure \ref{fig:1} shows two pairs of locations that were incorrectly matched (neither of them is the same location, but our algorithm thinks they are). By observation, we find that they have similar characteristics (e.g., double white lines, sidewalks, fences) and that the trees cover a large portion of the image. We therefore plan to reduce the number of feature points on objects such as trees in subsequent improvements and incorporate methods like to landmark recognition for further enhancement.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figure1.png}
+    \caption{Two pairs of incorrectly matched locations}
+    \label{fig:1}
+\end{figure}
 
 \section{Timeline and Goal}
 
-Milestones will include:
+\begin{tabular}{|c|c|}
+    \hline \textbf{Duration} & \textbf{Goal}\\
+    \hline Oct.9 - Oct.13 & Project proposal\\
+    \hline Oct.14 - Nov.3 & Datasets setup and build baseline method (BoVW)\\
+    \hline Nov.4 - Nov.14 & First round evaluation and baseline finetuning\\
+    \hline Nov.15 - Nov.17 & Initial result report\\
+    \hline Nov.18 - Nov.28 & Implement improvement\\
+    \hline Nov.29 - Dec.1 & First round evaluation and project video\\
+    \hline Dec.2 - Dec.15 & Final report\\
+    \hline
+\end{tabular}
 
-1. Set up the image map database. 
-
-2. Set up the SIFT algorithm. 
-
-3. Set up the search algorithm. 
-
-4. Integrate the location inference.\\
-The final deliverable would make the smartphone able to identify its own location based on its camera.
-
-
-
-% \bibliographystyle{alpha}
-% \bibliography{sample}
-
-
-
-% \subsection{How to create Sections and Subsections}
-
-% Simply use the section and subsection commands, as in this example document! With Overleaf, all the formatting and numbering is handled automatically according to the template you've chosen. If you're using the Visual Editor, you can also create new section and subsections via the buttons in the editor toolbar.
-
-% \subsection{How to include Figures}
-
-% First you have to upload the image file from your computer using the upload link in the file-tree menu. Then use the includegraphics command to include it in your document. Use the figure environment and the caption command to add a number and a caption to your figure. See the code for Figure \ref{fig:frog} in this section for an example.
-
-% Note that your figure will automatically be placed in the most appropriate place for it, given the surrounding text and taking into account other figures or tables that may be close by. You can find out more about adding images to your documents in this help article on \href{https://www.overleaf.com/learn/how-to/Including_images_on_Overleaf}{including images on Overleaf}.
-
-% \begin{figure}
-% \centering
-% \includegraphics[width=0.25\linewidth]{frog.jpg}
-% \caption{\label{fig:frog}This frog was uploaded via the file-tree menu.}
-% \end{figure}
-
-% \subsection{How to add Tables}
-
-% Use the table and tabular environments for basic tables --- see Table~\ref{tab:widgets}, for example. For more information, please see this help article on \href{https://www.overleaf.com/learn/latex/tables}{tables}. 
-
-% \begin{table}
-% \centering
-% \begin{tabular}{l|r}
-% Item & Quantity \\\hline
-% Widgets & 42 \\
-% Gadgets & 13
-% \end{tabular}
-% \caption{\label{tab:widgets}An example table.}
-% \end{table}
-
-% \subsection{How to add Comments and Track Changes}
-
-% Comments can be added to your project by highlighting some text and clicking ``Add comment'' in the top right of the editor pane. To view existing comments, click on the Review menu in the toolbar above. To reply to a comment, click on the Reply button in the lower right corner of the comment. You can close the Review pane by clicking its name on the toolbar when you're done reviewing for the time being.
-
-% Track changes are available on all our \href{https://www.overleaf.com/user/subscription/plans}{premium plans}, and can be toggled on or off using the option at the top of the Review pane. Track changes allow you to keep track of every change made to the document, along with the person making the change. 
-
-% \subsection{How to add Lists}
-
-% You can make lists with automatic numbering \dots
-
-% \begin{enumerate}
-% \item Like this,
-% \item and like this.
-% \end{enumerate}
-% \dots or bullet points \dots
-% \begin{itemize}
-% \item Like this,
-% \item and like this.
-% \end{itemize}
-
-% \subsection{How to write Mathematics}
-
-% \LaTeX{} is great at typesetting mathematics. Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
-% \[S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
-%       = \frac{1}{n}\sum_{i}^{n} X_i\]
-% denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
-
-
-% \subsection{How to change the margins and paper size}
-
-% Usually the template you're using will have the page margins and paper size set correctly for that use-case. For example, if you're using a journal article template provided by the journal publisher, that template will be formatted according to their requirements. In these cases, it's best not to alter the margins directly.
-
-% If however you're using a more general template, such as this one, and would like to alter the margins, a common way to do so is via the geometry package. You can find the geometry package loaded in the preamble at the top of this example file, and if you'd like to learn more about how to adjust the settings, please visit this help article on \href{https://www.overleaf.com/learn/latex/page_size_and_margins}{page size and margins}.
-
-% \subsection{How to change the document language and spell check settings}
-
-% Overleaf supports many different languages, including multiple different languages within one document. 
-
-% To configure the document language, simply edit the option provided to the babel package in the preamble at the top of this example project. To learn more about the different options, please visit this help article on \href{https://www.overleaf.com/learn/latex/International_language_support}{international language support}.
-
-% To change the spell check language, simply open the Overleaf menu at the top left of the editor window, scroll down to the spell check setting, and adjust accordingly.
-
-% \subsection{How to add Citations and a References List}
-
-% You can simply upload a \verb|.bib| file containing your BibTeX entries, created with a tool such as JabRef. You can then cite entries from it, like this: \cite{greenwade93}. Just remember to specify a bibliography style, as well as the filename of the \verb|.bib|. You can find a \href{https://www.overleaf.com/help/97-how-to-include-a-bibliography-using-bibtex}{video tutorial here} to learn more about BibTeX.
-
-% If you have an \href{https://www.overleaf.com/user/subscription/plans}{upgraded account}, you can also import your Mendeley or Zotero library directly as a \verb|.bib| file, via the upload menu in the file-tree.
-
-% \subsection{Good luck!}
-
-% We hope you find Overleaf useful, and do take a look at our \href{https://www.overleaf.com/learn}{help library} for more tutorials and user guides! Please also let us know if you have any feedback using the Contact Us link at the bottom of the Overleaf menu --- or use the contact form at \url{https://www.overleaf.com/contact}.
-
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}

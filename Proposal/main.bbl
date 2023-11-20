@@ -1,0 +1,20 @@
+\begin{thebibliography}{1}
+
+\bibitem{ali2022gsv}
+Amar Ali-bey, Brahim Chaib-draa, and Philippe Gigu{\`e}re.
+\newblock Gsv-cities: Toward appropriate supervised visual place recognition.
+\newblock {\em Neurocomputing}, 513:194--203, 2022.
+
+\bibitem{zhang2021visual}
+Xiwu Zhang, Lei Wang, and Yan Su.
+\newblock Visual place recognition: A survey from deep learning perspective.
+\newblock {\em Pattern Recognition}, 113:107760, 2021.
+
+\bibitem{zitnick2014edge}
+C~Lawrence Zitnick and Piotr Doll{\'a}r.
+\newblock Edge boxes: Locating object proposals from edges.
+\newblock In {\em Computer Vision--ECCV 2014: 13th European Conference, Zurich,
+  Switzerland, September 6-12, 2014, Proceedings, Part V 13}, pages 391--405.
+  Springer, 2014.
+
+\end{thebibliography}
