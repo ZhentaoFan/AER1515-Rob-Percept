@@ -3,7 +3,8 @@ import numpy as np
 from sklearn.svm import SVC
 from constants import *
 from functions import (
-    load_image_info_list, extract_sift_features, build_features
+    load_image_info_list, extract_sift_features, build_features,
+    extract_obj_features
 )
 
 # from sklearn.cluster import KMeans
@@ -26,6 +27,14 @@ def train_classifier(features, labels):
 def main():
     try:
         image_path = sys.argv[1]
+        if len(sys.argv) > 2:
+            dnn_flag = True
+            obj_weight = float(sys.argv[2])
+            weight_file_path = sys.argv[3]
+            cfg_file_path = sys.argv[4]
+            names_file_path = sys.argv[5]
+        else:
+            dnn_flag = False
     except:
         print('Invalid argv! Expected: training_set_path')
 
@@ -56,6 +65,20 @@ def main():
     print('Build features')
 
     features = build_features(kmeans, descriptors)
+
+    if dnn_flag:
+        print('Extract object features using DNN')
+
+        obj_features = extract_obj_features(
+            image_paths,
+            weight_file_path,
+            cfg_file_path,
+            names_file_path
+        )
+        features = [
+            np.hstack((i * obj_weight, j))
+            for i, j in zip(obj_features, features)
+        ]
 
     print('Train classifier')
 

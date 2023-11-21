@@ -1,6 +1,36 @@
 import os, sys, shutil, random
 from constants import *
-from functions import load_image_info_list
+
+def load_image_info_list(dataset_path):
+    image_info_list = []
+
+    for city_folder in os.listdir(dataset_path):
+        city_folder_path = os.path.join(dataset_path, city_folder)
+
+        for image_file in os.listdir(city_folder_path):
+            parts = image_file.split('_')
+
+            if len(parts) > 8:
+                parts = parts[:7] + ['_'.join(parts[7:])]
+
+            (city, place_id, year, month, bearing, latitude,
+                longitude, panoid) = parts
+            panoid = panoid.split('.')[0]
+
+            image_info_list.append({
+                K_CITY: city,
+                K_PLACEID: place_id,
+                K_YEAR: year,
+                K_MONTH: month,
+                K_BEARING: bearing,
+                K_LATITUDE: latitude,
+                K_LONGITUDE: longitude,
+                K_PANOID: panoid,
+                K_FILE: image_file,
+                K_PATH: os.path.join(city_folder_path, image_file)
+            })
+
+    return image_info_list
 
 def main():
     try:

@@ -1,6 +1,8 @@
 import os, cv2
 import numpy as np
 from constants import *
+# from tree_detector import get_tree_mask
+from object_detector import load_net, load_interesting_id_map, get_obj_features
 
 # SIFT feature extraction
 def extract_sift_features(image_paths):
@@ -9,11 +11,32 @@ def extract_sift_features(image_paths):
 
     for image_path in image_paths:
         image = cv2.imread(image_path)
+        # tree_mask = get_tree_mask(image)
+        # obj_mask = get_obj_mask(image, net, exclude_ids)
+        # mask = cv2.bitwise_and(tree_mask, obj_mask)
+        mask = None
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        _, des = sift.detectAndCompute(gray, None)
+
+        _, des = sift.detectAndCompute(gray, mask)
         descriptors.append(des)
 
     return descriptors
+
+# Detect object features using DNN
+def extract_obj_features(image_paths, weight_file_path,
+                         cfg_file_path, names_file_path):
+    obj_features = []
+
+    net = load_net(weight_file_path, cfg_file_path)
+    interesting_id_map = load_interesting_id_map(names_file_path)
+
+    for image_path in image_paths:
+        image = cv2.imread(image_path)
+
+        features = get_obj_features(image, net, interesting_id_map)
+        obj_features.append(features)
+
+    return obj_features
 
 # Feature encoding
 def build_features(kmeans, descriptors):
