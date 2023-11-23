@@ -3,9 +3,9 @@ from time import time
 import numpy as np
 
 LOWER_BOUND = 10
-NO_TEST = 5
-WEIGHTS = [1, 10, 20, 30, 40, 50]
-SIZES = [50, 100, 200]
+NO_TEST = 20
+WEIGHTS = [5, 10]
+SIZES = [10, 50, 100, 200]
 CITIES = ['London Boston Chicago Osaka']
 
 def main():
@@ -32,18 +32,18 @@ def main():
         for i in range(1, NO_TEST + 1):
             print(f'(size = {size}) #{i}: Generating dataset')
 
-            subprocess.run(f'python3 data_extractor.py {LOWER_BOUND} {source_data} {bench_data} {size} {" ".join(CITIES)}', shell=True, stdout=subprocess.PIPE, text=True)
+            subprocess.run(f'python3 data_extractor.py {LOWER_BOUND} {source_data} {bench_data} {size} {" ".join(CITIES)}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
             print(f'(size = {size}, NO DNN) #{i}: Training')
 
             training_time = time()
-            subprocess.run(f'python3 training.py {bench_data}', shell=True, stdout=subprocess.PIPE, text=True)
+            subprocess.run(f'python3 training.py {bench_data}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             training_time = time() - training_time
 
             print(f'(size = {size}, NO DNN) #{i}: Testing')
 
             test_time = time()
-            result = subprocess.run(f'python3 test.py {bench_data}', shell=True, stdout=subprocess.PIPE, text=True)
+            result = subprocess.run(f'python3 test.py {bench_data}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             test_time = time() - test_time
 
             accuracy = float(result.stdout.split(' ')[-1].strip()[:-1])
@@ -55,16 +55,16 @@ def main():
             print(f'(size = {size}, NO DNN) #{i}: Accracy = {accuracy}%, Training time = {training_time}, Test time = {test_time}')
 
             for j, weight in enumerate(WEIGHTS):
-                print(f'(size = {size}, DNN weight = {weight}) #{i}: Training')
+                print(f'(size = {size}, weight = {weight}) #{i}: Training')
 
                 training_time = time()
-                subprocess.run(f'python3 training.py {bench_data} {weight} yolo/yolov3-spp.weights yolo/yolov3-spp.cfg yolo/coco.names', shell=True, stdout=subprocess.PIPE, text=True)
+                subprocess.run(f'python3 training.py {bench_data} {weight} yolov5x', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 training_time = time() - training_time
 
-                print(f'(size = {size}, DNN weight = {weight}) #{i}: Testing')
+                print(f'(size = {size}, weight = {weight}) #{i}: Testing')
 
                 test_time = time()
-                result = subprocess.run(f'python3 test.py {bench_data} {weight} yolo/yolov3-spp.weights yolo/yolov3-spp.cfg yolo/coco.names', shell=True, stdout=subprocess.PIPE, text=True)
+                result = subprocess.run(f'python3 test.py {bench_data} {weight} yolov5x', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 test_time = time() - test_time
 
                 accuracy = float(result.stdout.split(' ')[-1].strip()[:-1])
@@ -73,7 +73,7 @@ def main():
                 training_time_dnn[j].append(training_time)
                 test_time_dnn[j].append(test_time)
 
-                print(f'(size = {size}, DNN weight = {weight}) #{i}: Accracy = {accuracy}%, Training time = {training_time}, Test time = {test_time}')
+                print(f'(size = {size}, weight = {weight}) #{i}: Accracy = {accuracy}%, Training time = {training_time}, Test time = {test_time}')
     
         accuracy_rec_base.append(accuracy_base)
         training_time_rec_base.append(training_time_base)

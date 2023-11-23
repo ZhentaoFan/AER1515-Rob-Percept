@@ -13,9 +13,7 @@ def main():
         if len(sys.argv) > 2:
             dnn_flag = True
             obj_weight = float(sys.argv[2])
-            weight_file_path = sys.argv[3]
-            cfg_file_path = sys.argv[4]
-            names_file_path = sys.argv[5]
+            yolov5_model = sys.argv[3]
         else:
             dnn_flag = False
     except:
@@ -51,10 +49,7 @@ def main():
         print('Extract object features using DNN')
 
         obj_features = extract_obj_features(
-            image_paths,
-            weight_file_path,
-            cfg_file_path,
-            names_file_path
+            image_paths, yolov5_model, 0.1, 0.45
         )
         features = [
             np.hstack((i * obj_weight, j))

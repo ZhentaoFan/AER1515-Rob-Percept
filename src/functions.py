@@ -2,7 +2,8 @@ import os, cv2
 import numpy as np
 from constants import *
 # from tree_detector import get_tree_mask
-from object_detector import load_net, load_interesting_id_map, get_obj_features
+# from Project.object_detector_yolov3 import load_net, load_interesting_id_map, get_obj_features
+from object_detector_yolov5 import load_model, get_obj_features
 
 # SIFT feature extraction
 def extract_sift_features(image_paths):
@@ -23,17 +24,19 @@ def extract_sift_features(image_paths):
     return descriptors
 
 # Detect object features using DNN
-def extract_obj_features(image_paths, weight_file_path,
-                         cfg_file_path, names_file_path):
+def extract_obj_features(image_paths, yolov5_model,
+                         conf_thres=0.25, iou_thres=0.45):
     obj_features = []
 
-    net = load_net(weight_file_path, cfg_file_path)
-    interesting_id_map = load_interesting_id_map(names_file_path)
+    # net = load_net(weight_file_path, cfg_file_path)
+    # interesting_id_map = load_interesting_id_map(names_file_path)
+    model = load_model(yolov5_model, conf_thres, iou_thres)
 
     for image_path in image_paths:
         image = cv2.imread(image_path)
+        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        features = get_obj_features(image, net, interesting_id_map)
+        features = get_obj_features(rgb, model)
         obj_features.append(features)
 
     return obj_features

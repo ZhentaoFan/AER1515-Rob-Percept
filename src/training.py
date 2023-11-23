@@ -1,6 +1,7 @@
-import cv2, os, sys, pickle
+import os, sys, pickle
 import numpy as np
 from sklearn.svm import SVC
+# from sklearn.ensemble import RandomForestClassifier
 from constants import *
 from functions import (
     load_image_info_list, extract_sift_features, build_features,
@@ -20,6 +21,7 @@ def build_vocabulary(descriptors, k):
 # Classifier training
 def train_classifier(features, labels):
     classifier = SVC(kernel='linear')
+    # classifier = RandomForestClassifier(n_estimators=1000)
     classifier.fit(features, labels)
 
     return classifier
@@ -30,9 +32,7 @@ def main():
         if len(sys.argv) > 2:
             dnn_flag = True
             obj_weight = float(sys.argv[2])
-            weight_file_path = sys.argv[3]
-            cfg_file_path = sys.argv[4]
-            names_file_path = sys.argv[5]
+            yolov5_model = sys.argv[3]
         else:
             dnn_flag = False
     except:
@@ -70,10 +70,7 @@ def main():
         print('Extract object features using DNN')
 
         obj_features = extract_obj_features(
-            image_paths,
-            weight_file_path,
-            cfg_file_path,
-            names_file_path
+            image_paths, yolov5_model, 0.1, 0.45
         )
         features = [
             np.hstack((i * obj_weight, j))
