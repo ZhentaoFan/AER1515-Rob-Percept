@@ -3,9 +3,9 @@ from time import time
 import numpy as np
 
 LOWER_BOUND = 10
-NO_TEST = 20
-WEIGHTS = [5, 10]
-SIZES = [10, 50, 100, 200]
+NO_TEST = 100
+WEIGHTS = [10]
+SIZES = [50, 100, 200]
 CITIES = ['London Boston Chicago Osaka']
 
 def main():

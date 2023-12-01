@@ -6,15 +6,11 @@ from constants import *
 from object_detector_yolov5 import load_model, get_obj_features
 
 # SIFT feature extraction
-def extract_sift_features(image_paths):
+def extract_sift_features(images):
     sift = cv2.SIFT_create(nfeatures=NO_FEATURES)
     descriptors = []
 
-    for image_path in image_paths:
-        image = cv2.imread(image_path)
-        # tree_mask = get_tree_mask(image)
-        # obj_mask = get_obj_mask(image, net, exclude_ids)
-        # mask = cv2.bitwise_and(tree_mask, obj_mask)
+    for image in images:
         mask = None
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -24,16 +20,13 @@ def extract_sift_features(image_paths):
     return descriptors
 
 # Detect object features using DNN
-def extract_obj_features(image_paths, yolov5_model,
-                         conf_thres=0.25, iou_thres=0.45):
+def extract_obj_features(images, model):
     obj_features = []
 
     # net = load_net(weight_file_path, cfg_file_path)
     # interesting_id_map = load_interesting_id_map(names_file_path)
-    model = load_model(yolov5_model, conf_thres, iou_thres)
 
-    for image_path in image_paths:
-        image = cv2.imread(image_path)
+    for image in images:
         rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         features = get_obj_features(rgb, model)

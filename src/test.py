@@ -2,7 +2,9 @@ import os, sys, pickle
 import numpy as np
 from constants import *
 from functions import (
-    load_image_info_list, extract_sift_features, build_features,
+    load_image_info_list_gsv,
+    extract_sift_features,
+    build_features,
     extract_obj_features
 )
 
@@ -32,7 +34,7 @@ def main():
     if accuracy_test:
         print('Read test set list')
 
-        image_list = load_image_info_list(os.path.join(image_path, 'test'))
+        image_list = load_image_info_list_gsv(os.path.join(image_path, 'test'))
         image_paths = [i[K_PATH] for i in image_list]
     else:
         image_paths = [image_path]
@@ -67,7 +69,7 @@ def main():
         cnt = 0
 
         for i in range(len(image_list)):
-            label = f'{image_list[i][K_CITY]}_{image_list[i][K_PLACEID]}'
+            label = image_list[i][K_LABEL]
             if label == predictions[i]:
                 cnt += 1
             else:

@@ -4,7 +4,10 @@ from sklearn.svm import SVC
 # from sklearn.ensemble import RandomForestClassifier
 from constants import *
 from functions import (
-    load_image_info_list, extract_sift_features, build_features,
+    load_image_info_list_gsv,
+    load_image_info_list,
+    extract_sift_features,
+    build_features,
     extract_obj_features
 )
 
@@ -40,7 +43,8 @@ def main():
 
     print('Read training set list')
 
-    training_list = load_image_info_list(os.path.join(image_path, 'training'))
+    # training_list = load_image_info_list_gsv(os.path.join(image_path, 'training'))
+    training_list = load_image_info_list(image_path)
     image_paths = [i[K_PATH] for i in training_list]
 
     print(f'Training size: {len(training_list)}')
@@ -79,7 +83,7 @@ def main():
 
     print('Train classifier')
 
-    labels = [f'{i[K_CITY]}_{i[K_PLACEID]}' for i in training_list]
+    labels = [i[K_LABEL] for i in training_list]
     classifier = train_classifier(features, labels)
 
     with open(F_CLASSIFIER, 'wb') as file:
