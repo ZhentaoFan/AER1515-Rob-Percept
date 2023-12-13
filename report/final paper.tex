@@ -13,7 +13,9 @@
 
 \title{Learning and Enhancement of Visual Place Recognition Methods\\
 {\footnotesize \textsuperscript{*}Note: This is for AER 1515 course project.}
-\thanks{Identify applicable funding agency here. If none, delete this.}
+\thanks{
+% Identify applicable funding agency here. If none, delete this.
+}
 }
 
 \author{\IEEEauthorblockN{Zhenyuan Xiang}
@@ -27,6 +29,30 @@ zhenyuan.xiang@mail.utoronto.ca}
 \textit{University of Toronto}\\
 Toronto, Canada \\
 zhentao.fan@mail.utoronto.ca}
+% \and
+% \IEEEauthorblockN{3\textsuperscript{rd} Given Name Surname}
+% \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+% \textit{name of organization (of Aff.)}\\
+% City, Country \\
+% email address or ORCID}
+% \and
+% \IEEEauthorblockN{4\textsuperscript{th} Given Name Surname}
+% \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+% \textit{name of organization (of Aff.)}\\
+% City, Country \\
+% email address or ORCID}
+% \and
+% \IEEEauthorblockN{5\textsuperscript{th} Given Name Surname}
+% \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+% \textit{name of organization (of Aff.)}\\
+% City, Country \\
+% email address or ORCID}
+% \and
+% \IEEEauthorblockN{6\textsuperscript{th} Given Name Surname}
+% \IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+% \textit{name of organization (of Aff.)}\\
+% City, Country \\
+% email address or ORCID}
 }
 
 \maketitle
@@ -154,6 +180,11 @@ The exclusion of transient features like cars and pedestrians, which may not be 
 \\
 
 \subsection{Landmark Detection}
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=9cm]{landmark.png}}
+\caption{Landmark Detection Algorithm.}
+\label{fig}
+\end{figure}
 \paragraph{Overview}
 Our project has incorporated an enhanced landmark detection feature into the Bag of Visual Words (BoVW) method to further improve the accuracy of Visual Place Recognition (VPR). This improvement focuses on detecting specific feature objects in the environment, which act as unique identifiers or landmarks.
 
@@ -193,7 +224,37 @@ Through experimentation, we determined that the optimal weighting factor for the
 
 \paragraph{Performance and Results}
 
-\textbf{ \{ add charts here\} }
+% \begin{figure}[htbp]
+% \centerline{\includegraphics{comparison for landmark.png}}
+% \caption{Example of a figure caption.}
+% \label{fig}
+% \end{figure}
+% \textbf{ \{ add charts here\} }
+\begin{table}[h]
+\centering
+\caption{Landmark Detection Result}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$\#$ of places &  Accuracy($\%$)  &  Train Time($\%$)   &  Test Time($\%$)   \\ \hline
+50 & 80.24\% & 66.61 & 6.91 \\ \hline
+100 & 76.98\% & 127.23 & 9.06 \\ \hline
+200 & 72.55\% & 246.73 & 13.88 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Comparison with the previous result}
+\label{my-label}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$\#$ of places & $\Delta$Accuracy($\%$)  & $\Delta$Train Time($\%$)   & $\Delta$Test Time($\%$)   \\ \hline
+50 & 1.32\% & 19.06 & 79.87 \\ \hline
+100 & 1.28\% & 17.75 & 74.06 \\ \hline
+200 & 1.66\% & 17.08 & 64.58 \\ \hline
+\end{tabular}
+\end{table}
 
 When compared to our previous results without landmark detection, there was a noticeable increase in accuracy. Specifically, the accuracy increased by 1.32\% for 50 places, 1.28\% for 100 places, and 1.66\% for 200 places.
 
