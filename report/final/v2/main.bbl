@@ -1,0 +1,47 @@
+\begin{thebibliography}{1}
+
+\bibitem{ali2022gsv}
+Amar Ali-bey, Brahim Chaib-draa, and Philippe Gigu{\`e}re.
+\newblock Gsv-cities: Toward appropriate supervised visual place recognition.
+\newblock {\em Neurocomputing}, 513:194--203, 2022.
+
+\bibitem{lin2014microsoft}
+Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva
+  Ramanan, Piotr Doll{\'a}r, and C~Lawrence Zitnick.
+\newblock Microsoft coco: Common objects in context.
+\newblock In {\em Computer Vision--ECCV 2014: 13th European Conference, Zurich,
+  Switzerland, September 6-12, 2014, Proceedings, Part V 13}, pages 740--755.
+  Springer, 2014.
+
+\bibitem{lowry2015visual}
+Stephanie Lowry, Niko S{\"u}nderhauf, Paul Newman, John~J Leonard, David Cox,
+  Peter Corke, and Michael~J Milford.
+\newblock Visual place recognition: A survey.
+\newblock {\em ieee transactions on robotics}, 32(1):1--19, 2015.
+
+\bibitem{nicosevici2012automatic}
+Tudor Nicosevici and Rafael Garcia.
+\newblock Automatic visual bag-of-words for online robot navigation and
+  mapping.
+\newblock {\em IEEE Transactions on Robotics}, 28(4):886--898, 2012.
+
+\bibitem{redmon2018yolov3}
+Joseph Redmon and Ali Farhadi.
+\newblock Yolov3: An incremental improvement.
+\newblock {\em arXiv preprint arXiv:1804.02767}, 2018.
+
+\bibitem{yang2010bag}
+Yi~Yang and Shawn Newsam.
+\newblock Bag-of-visual-words and spatial extensions for land-use
+  classification.
+\newblock In {\em Proceedings of the 18th SIGSPATIAL international conference
+  on advances in geographic information systems}, pages 270--279, 2010.
+
+\bibitem{zitnick2014edge}
+C~Lawrence Zitnick and Piotr Doll{\'a}r.
+\newblock Edge boxes: Locating object proposals from edges.
+\newblock In {\em Computer Vision--ECCV 2014: 13th European Conference, Zurich,
+  Switzerland, September 6-12, 2014, Proceedings, Part V 13}, pages 391--405.
+  Springer, 2014.
+
+\end{thebibliography}
