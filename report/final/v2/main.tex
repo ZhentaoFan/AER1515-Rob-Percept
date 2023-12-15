@@ -240,6 +240,18 @@ First of all, our detection of vegetation areas is too simple to really identify
 
 For example, it is possible that similar features on cars could be used as a evidence for determining whether a scene is a road or not. Therefore removing the features on the car will result in a decrease in accuracy.
 
+\section{Efficiency}
+
+In order to make our model more potential for practical applications, we also try to make it as efficient as possible. 
+
+We tested and found that the most time-consuming part of the training process was training k-means clustering, so we replaced scikit-learn with the RAPIDS/cuML GPU-accelerated machine learning algorithm libraries. The two have almost identical Python APIs, so we can switch CPU/GPU very easily. The former can increase the overall running speed by about 7 to 10 times in tests due to the use of GPU acceleration, which is a big step forward.
+
+For object detection, we initially used YOLOv3, which can be loaded directly using OpenCV's DNN module; we then found that YOLOv5, which uses PyTorch (which supports CUDA by default), was much faster, so we used YOLOv5 in our final implementation.
+
+In addition, in order to reduce repetitive computation during training, we can train the SIFT feature classification k-means first and save the k-means model. For subsequent training, we can reuse the pretrained k-means clustering, so that only the SVC needs to be trained, which is very fast (usually only takes a few seconds).
+
+We didn't use OpenCV with CUDA support, as that would have required manually compiling and installing OpenCV, but it's certainly an area where performance could be further improved.
+
 \section{Performance and Results}
 
 \subsection{Dataset}
@@ -251,6 +263,15 @@ In order to reduce the computational resources required for testing, we wrote da
 \subsection{Performance}
 
 To ensure that the tests were representative, we generated 100 different randomized test sets for different numbers of locations (50, 100, 200) using the method described above. We then tested our baseline algorithm and the extended algorithm with object detection ($w = 10$) on these data.
+
+Hardware specification:
+
+\begin{itemize}
+    \item OS: Ubuntu 22.04.3 LTS (WSL2)
+    \item CPU: AMD Ryzen™ 7 7800X3D, 4.2GHz
+    \item GPU: NVIDIA GeForce RTX 4080
+    \item RAM: 32GB DDR5, 6000MHz
+\end{itemize}
 
 \begin{table}[ht]
     \centering
@@ -276,8 +297,34 @@ To ensure that the tests were representative, we generated 100 different randomi
     \end{tabular}
 \end{table}
 
+Based on the testing result above, we used quadratic polynomial curve to fit and predict the accuracy, training and testing time over different number of places:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig_5.png}
+    \caption{Predicted Accuracy Curve}
+    \label{fig:5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig_6.png}
+    \caption{Predicted Training Time Curve}
+    \label{fig:6}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig_7.png}
+    \caption{Predicted Testing Time Curve}
+    \label{fig:7}
+\end{figure}
 
 Compare the two results, there is a noticeable increase in accuracy. Specifically, the accuracy increased by 1.32\% for 50 places, 1.28\% for 100 places, and 1.66\% for 200 places.
+
+From the prediction curves, we can see that the accuracy improvement resulting from using our proposed extension tends to be larger for tests with more locations. This is understandable, considering that when there are more locations, the probability of two locations having similar local features is higher, making it difficult to distinguish between two locations using local descriptors. Using distinctive objects as global descriptors will help to distinguish between different locations in this case.
+
+In addition, since SIFT feature extraction, k-means clustering, SVC, and YOLOv5 object detection are all proportional to the number of processed images, both training and testing time are essentially linear in the number of locations.
 
 It is worth noting that since it takes about two seconds to load the YOLOv5 model each time, and real applications do not need to load the model frequently, the percentage increase in test time is actually less than it appears.
 
